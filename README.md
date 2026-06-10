@@ -12,11 +12,9 @@ Heavy Claude users burn tokens guessing which model to use: Opus to plan? Sonnet
 
 ## Install
 
-From a marketplace (once published):
-
 ```
-/plugin marketplace add <owner>/<repo>
-/plugin install calibrate@<marketplace>
+/plugin marketplace add akshat4165/calibrate
+/plugin install calibrate@calibrate
 ```
 
 For development:

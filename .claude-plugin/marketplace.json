@@ -1,0 +1,20 @@
+{
+  "name": "calibrate",
+  "owner": {
+    "name": "Akshat Agarwal",
+    "email": "akshatagarwal4165@gmail.com"
+  },
+  "description": "Per-project model policy for Claude Code — calibrate which model plans, codes, and reviews, then prove the savings.",
+  "plugins": [
+    {
+      "name": "calibrate",
+      "source": "./",
+      "description": "Analyzes your repo, writes an auditable per-project model routing policy, routes phase agents through it, and reports measured token savings.",
+      "version": "0.1.0",
+      "author": {
+        "name": "Akshat Agarwal"
+      },
+      "tags": ["models", "cost", "routing", "token-optimization"]
+    }
+  ]
+}
