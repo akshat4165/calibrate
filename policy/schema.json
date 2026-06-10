@@ -1,0 +1,70 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://github.com/akshatagarwal/calibrate/policy/schema.json",
+  "title": "Calibrate model policy",
+  "description": "Per-project routing policy: which Claude model tier handles each phase of work, and when to escalate.",
+  "type": "object",
+  "required": ["version", "phases"],
+  "properties": {
+    "version": { "const": 1 },
+    "provisional": {
+      "type": "boolean",
+      "description": "True when the policy was written from a greenfield interview rather than repo evidence — re-calibrate once real code exists."
+    },
+    "calibratedAt": {
+      "type": "string",
+      "format": "date",
+      "description": "Date the policy was last generated or re-calibrated."
+    },
+    "complexity": {
+      "type": "object",
+      "properties": {
+        "score": { "enum": ["low", "medium", "high"] },
+        "rationale": { "type": "string" }
+      }
+    },
+    "phases": {
+      "type": "object",
+      "required": ["plan", "code", "review", "explore"],
+      "additionalProperties": { "$ref": "#/definitions/phase" }
+    },
+    "escalations": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["when", "action"],
+        "properties": {
+          "when": {
+            "type": "string",
+            "description": "Trigger: a path glob (paths:src/auth/**), a signal (tests_failed_twice, user_retry), or free text the router interprets."
+          },
+          "action": {
+            "type": "string",
+            "description": "What to do, e.g. 'review uses opus' or 'raise code one tier for this task'."
+          }
+        }
+      }
+    }
+  },
+  "definitions": {
+    "phase": {
+      "type": "object",
+      "required": ["model", "rationale"],
+      "properties": {
+        "model": {
+          "type": "string",
+          "description": "Tier alias (haiku|sonnet|opus|fable) resolved by Claude Code to the current version of that tier, or a full model id to pin a specific version."
+        },
+        "effort": { "enum": ["low", "medium", "high", "max"] },
+        "rationale": {
+          "type": "string",
+          "description": "One line of evidence-based justification. Required so the policy stays auditable."
+        },
+        "pinned": {
+          "type": "boolean",
+          "description": "User override — re-calibration must not change a pinned phase."
+        }
+      }
+    }
+  }
+}

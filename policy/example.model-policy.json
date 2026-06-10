@@ -1,0 +1,30 @@
+{
+  "version": 1,
+  "calibratedAt": "2026-06-11",
+  "complexity": {
+    "score": "medium",
+    "rationale": "Mid-size Next.js app, good test coverage, one payment integration."
+  },
+  "phases": {
+    "plan": {
+      "model": "opus",
+      "rationale": "Cross-cutting features touch API routes, DB schema, and UI together."
+    },
+    "code": {
+      "model": "sonnet",
+      "rationale": "Strong test suite and TypeScript catch cheap-tier mistakes."
+    },
+    "review": {
+      "model": "sonnet",
+      "rationale": "CI enforces tests; escalation rule covers the risky paths."
+    },
+    "explore": {
+      "model": "haiku",
+      "rationale": "Read-only search needs speed, not depth."
+    }
+  },
+  "escalations": [
+    { "when": "paths:src/payments/**", "action": "review uses opus" },
+    { "when": "tests_failed_twice", "action": "raise code one tier for this task" }
+  ]
+}
