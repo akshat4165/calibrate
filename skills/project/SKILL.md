@@ -20,12 +20,16 @@ Gather these signals (use fast tools; do not read whole files):
 
 Map signals to a tier per phase using this rubric as the starting point, then adjust with judgment:
 
+The tier ladder, cheapest to most capable: `haiku` < `sonnet` < `opus` < `fable`.
+
 | Phase | Default | Raise one tier when | Lower one tier when |
 |---|---|---|---|
 | plan | one tier above code | architectural/distributed complexity, many cross-cutting concerns | small codebase, well-trodden framework patterns |
 | code | sonnet | weak/no tests, tricky concurrency, unfamiliar stack | strong tests + types, mostly boilerplate/CRUD |
 | review | sonnet | security-sensitive paths, no CI | small diffs, CI enforces correctness |
 | explore | haiku | almost never | — |
+
+**When to recommend `fable`**: it is the tier above opus, built for long-horizon autonomous work — multi-hour migrations, root-cause investigations across a large codebase, architecture overhauls. Recommend it only as the `plan` tier on genuinely high-complexity repos (large monorepo, distributed systems, deep legacy entanglement), or as an escalation action for tasks the user describes as "rework/migrate the whole X". Most projects should NOT have fable in their policy — when complexity made you consider it, say so in the plan rationale (e.g. "opus suffices; fable reserved for the planned v2 migration"). Caveat: on security-research or biology-heavy codebases Fable's safety classifiers frequently reroute requests to Opus, so for those repos put `opus` in the policy directly.
 
 ## Greenfield projects (cold start)
 
