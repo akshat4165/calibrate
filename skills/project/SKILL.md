@@ -37,7 +37,7 @@ If the repo has little or no code (new project, empty directory, just a README),
 
 ## Step 3 — Write the policy
 
-Write `.claude/model-policy.json` in the project root, following the schema in `${CLAUDE_PLUGIN_ROOT}/policy/schema.json`. Use **tier aliases** (`haiku`, `sonnet`, `opus`, `fable`) so Claude Code resolves each to the current version of that tier; only pin a full model id if the user explicitly asks for version stability. Every phase entry MUST include a one-line `rationale` tied to evidence found in Step 1 — never a generic justification. Include `escalations` rules for the risk paths you actually found (glob patterns), plus the two defaults: escalate after repeated test failures, and escalate review for security-sensitive paths.
+Write `.claude/model-policy.json` in the project root, following the schema in `${CLAUDE_PLUGIN_ROOT}/policy/schema.json`. Use **tier aliases** (`haiku`, `sonnet`, `opus`, `fable`) so Claude Code resolves each to the current version of that tier; only pin a full model id if the user explicitly asks for version stability. Every phase entry MUST include a one-line `rationale` tied to evidence found in Step 1 — never a generic justification. Include `escalations` rules for the risk paths you actually found (glob patterns), plus two defaults: escalate after repeated test failures, and escalate review for security-sensitive paths. Skip a default when your explicit path rules already cover it — no redundant rules.
 
 If a policy file already exists, read it first and preserve any entries marked `"pinned": true` — those are user overrides.
 
