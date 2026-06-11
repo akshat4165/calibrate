@@ -8,13 +8,17 @@ Prove (or disprove) that the policy is paying off. Be honest — if the policy s
 
 ## Step 1 — Collect usage
 
-Claude Code writes session transcripts as JSONL under `~/.claude/projects/<encoded-project-path>/`. Prefer the community tool if available:
+Claude Code writes session transcripts as JSONL under `~/.claude/projects/<encoded-project-path>/`. Computing **actual** dollar figures requires read access to that directory — which is *outside the project root*, so a sandboxed or restricted session cannot reach it. If you cannot read `~/.claude/projects/`, skip to "Degraded mode" below; do not invent token counts.
+
+Try the community tool first (it reads the same transcripts):
 
 ```bash
-npx ccusage@latest --json
+npx -y ccusage@latest daily --json    # bare `--json` without a subcommand prints nothing
 ```
 
-and filter to this project. If `ccusage` is unavailable, parse the JSONL directly: sum `usage` blocks (input, output, cache read, cache create) grouped by model.
+and filter to this project. If `ccusage` is unavailable, parse the JSONL directly: sum `usage` blocks (`input_tokens`, `output_tokens`, `cache_read_input_tokens`, `cache_creation_input_tokens`) grouped by `message.model`.
+
+**Degraded mode** (transcripts unreadable and ccusage absent): you can still produce a useful report from `.calibrate/route-log.ndjson` (tier decisions) and the policy file (per-phase tiers). Report *theoretical* per-phase savings vs all-top-tier, clearly labelled as theoretical, and tell the user to either install ccusage or re-run this skill from the main interactive session (which has transcript access) to get actual dollars. Never present theoretical numbers as measured.
 
 ## Step 2 — Compute the comparison
 
