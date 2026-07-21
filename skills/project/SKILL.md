@@ -1,4 +1,5 @@
 ---
+name: project
 description: Analyze this repository and write a per-project model routing policy (.claude/model-policy.json) deciding which Claude model tier handles planning, coding, review, and exploration. Use when the user asks to calibrate the project, optimize token spend, or pick models for this repo.
 ---
 

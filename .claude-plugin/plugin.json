@@ -1,7 +1,7 @@
 {
   "name": "calibrate",
   "description": "Per-project model policy for Claude Code: analyzes your repo, writes a routing policy for which Claude model plans, codes, and reviews, then proves the token savings.",
-  "version": "0.1.3",
+  "version": "0.1.4",
   "author": {
     "name": "Akshat Agarwal",
     "email": "akshatagarwal4165@gmail.com"

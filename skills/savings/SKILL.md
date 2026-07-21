@@ -1,4 +1,5 @@
 ---
+name: savings
 description: Report token spend for this project and estimate savings achieved by the model policy versus an all-top-tier baseline. Use when the user asks how many tokens the policy saved, for a spend report, or to verify calibration is working.
 ---
 
