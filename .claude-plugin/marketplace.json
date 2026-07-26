@@ -10,7 +10,7 @@
       "name": "calibrate",
       "source": "./",
       "description": "Analyzes your repo, writes an auditable per-project model routing policy, routes phase agents through it, and reports measured token savings.",
-      "version": "0.1.4",
+      "version": "0.1.5",
       "author": {
         "name": "Akshat Agarwal"
       },

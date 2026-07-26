@@ -27,17 +27,25 @@ and filter to this project. If `ccusage` is unavailable, parse the JSONL directl
 - **Baseline**: the same token volumes priced as if every request ran on the project's top-tier model (the policy's `plan` model, or Opus if unset).
 - **Delta**: baseline − actual, in dollars and as a percentage.
 
-## Step 3 — Quality check
+## Step 3 — Compliance check (do this before trusting any savings number)
 
-Savings are meaningless if quality dropped. Check `.calibrate/route-log.ndjson` (if present) for escalation events, and scan recent sessions for signals of cheap-tier failure: immediate retries, user corrections right after a routed task, test failures following a coding task. Report the count.
+`.calibrate/route-log.ndjson` records what the router *nudged* — a directive injected into the conversation, not a guarantee Claude followed it. Never treat a logged nudge as an applied one. Check the session transcripts for actual `calibrate:planner` / `calibrate:coder` / `calibrate:reviewer` / `calibrate:explorer` subagent invocations (Task/Agent tool calls with those subagent types) in the same window as the route log, and compute:
 
-## Step 4 — Report
+- **Compliance rate**: nudges that resulted in a matching subagent call ÷ total nudges.
+- If compliance is 0% or near it, say so plainly and do not report a "policy savings" number — any Sonnet/Opus cost delta in that case is just baseline model pricing, not the policy working. This exact failure mode happened before (route.sh only logged intent and never nudged at all) — don't let a revived nudge mechanism get the same free pass without evidence it's actually being followed.
+
+## Step 4 — Quality check
+
+Check `.calibrate/route-log.ndjson` for escalation events, and scan recent sessions for signals of cheap-tier failure: immediate retries, user corrections right after a routed task, test failures following a coding task. Report the count.
+
+## Step 5 — Report
 
 Output:
 
 1. Spend by model for the period (table).
 2. Actual vs all-top-tier baseline, with the delta.
-3. Escalations and quality incidents observed.
-4. One recommendation: keep the policy, or re-run `/calibrate:project` because the data suggests a phase is mis-tiered (e.g. frequent escalations in `code` → raise its default).
+3. Compliance rate (nudged vs. actually delegated) — the number that tells you whether step 2's delta is attributable to the policy at all.
+4. Escalations and quality incidents observed.
+5. One recommendation: keep the policy, re-run `/calibrate:project` because a phase looks mis-tiered, or — if compliance is low — treat that as the priority fix over any tiering change.
 
 State clearly that dollar figures for subscription (Max/Pro) users represent quota value, not cash.
