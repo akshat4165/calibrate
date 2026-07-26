@@ -49,7 +49,7 @@ fi
 # before plan/code since their trigger words are more specific.
 phase=""
 case "$lower" in
-  *review*|*audit*|*"find bugs"*|*"check this"*|*"look at this diff"*|*"code review"*)
+  *review*|*"code audit"*|*"security audit"*|*"audit this"*|*"find bugs"*|*"check this"*|*"look at this diff"*|*"code review"*)
     phase="review" ;;
 esac
 if [ -z "$phase" ]; then
