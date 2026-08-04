@@ -120,15 +120,36 @@ case "$phase" in
   explore) agent="explorer" ;;
 esac
 
+# Escalated review is the one case measured to matter most and comply
+# least (0/6 in real usage — see the compliance-rate write-up this hook
+# exists to back up). A soft nudge alone hasn't worked here, so this one
+# path hard-blocks instead — unless the prompt already explicitly asks
+# for the subagent, in which case blocking would just be noise.
+if [ "$escalated" = "true" ]; then
+  case "$lower" in
+    *"calibrate:reviewer"*|*"reviewer subagent"*|*"reviewer agent"*)
+      block=false ;;
+    *)
+      block=true ;;
+  esac
+else
+  block=false
+fi
+
+mkdir -p "$cwd/.calibrate"
+printf '{"ts":"%s","phase":"%s","model":"%s","escalated":%s,"blocked":%s,"words":%s}\n' \
+  "$(date -u +%Y-%m-%dT%H:%M:%SZ)" "$phase" "$model" "$escalated" "$block" "$words" \
+  >> "$cwd/.calibrate/route-log.ndjson"
+
+if [ "$block" = "true" ]; then
+  echo "[calibrate] BLOCKED: this diff touches an escalation-flagged path (${rationale}). Policy requires the calibrate:reviewer subagent on model=\"${model}\" here — soft nudges alone haven't been followed for this in practice. To proceed, explicitly ask for it, e.g. \"Use the calibrate:reviewer subagent to review this.\" This won't block once the prompt says so." >&2
+  exit 2
+fi
+
 context="[calibrate] This prompt reads as a **${phase}** task. Per .claude/model-policy.json, delegate it to the \`calibrate:${agent}\` subagent with model=\"${model}\" (${rationale}) via the Agent tool, instead of doing the work directly in this conversation. Skip delegation only if the task is trivial enough that a subagent call would cost more than it saves."
 
 jq -n \
   --arg ctx "$context" \
   '{hookSpecificOutput: {hookEventName: "UserPromptSubmit", additionalContext: $ctx}}'
-
-mkdir -p "$cwd/.calibrate"
-printf '{"ts":"%s","phase":"%s","model":"%s","escalated":%s,"words":%s}\n' \
-  "$(date -u +%Y-%m-%dT%H:%M:%SZ)" "$phase" "$model" "$escalated" "$words" \
-  >> "$cwd/.calibrate/route-log.ndjson"
 
 exit 0
